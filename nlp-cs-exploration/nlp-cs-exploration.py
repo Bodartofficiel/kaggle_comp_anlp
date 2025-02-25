@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+import pathlib
 from datasets import Dataset
 from transformers import AutoTokenizer
 from evaluate import load
@@ -11,15 +12,17 @@ from transformers import (
     Trainer,
 )
 
-df = pd.read_csv("./train_submission.csv")
+train_dataset_path = pathlib.Path(__name__).parent / "data/train_submission.csv"
+df = pd.read_csv(train_dataset_path)
 print("Shape :" ,df.shape)
 print("Columns :", df.columns)
 print("Nombre de langue cible :",len(df["Label"].unique()))
 print(df.head())
 
-df_test = pd.read_csv("./test_without_labels.csv")
-print("Shape : ",df_test.shape)
-print(df_test.head())
+test_dataset_path = pathlib.Path(__name__).parent / "data/train_submission.csv"
+test_df = pd.read_csv(test_dataset_path) 
+print("Shape : ",test_df.shape)
+print(test_df.head())
 
 # Preprocessing : enlever les valeurs manquantes
 df.dropna(inplace = True)
@@ -95,7 +98,8 @@ trainer = Trainer(
 trainer.train()
 
 # Chargement du fichier test
-test_df = pd.read_csv("./test_without_labels.csv") 
+test_dataset_path = pathlib.Path(__name__).parent / "data/train_submission.csv"
+test_df = pd.read_csv(test_dataset_path) 
 test_df.reset_index(inplace=True)
 test_dataset = Dataset.from_pandas(test_df)
 test_dataset = test_dataset.map(tokenize_function, batched=True)
