@@ -64,7 +64,8 @@ def clean_twitter_at(sentence: str) -> str:
 
 
 def clean_symbols(sentence: str) -> str:
-    cleantext = re.sub(r"[^\w\s]", " ", sentence)
+    sentence = re.sub(r"(?<!\w)'(?!\w)", " ", sentence)
+    cleantext = re.sub(r"[^\w\s']", " ", sentence)
     return cleantext
 
 
@@ -77,4 +78,5 @@ if __name__ == "__main__":
     test = "एला आप मन अपन डिस्ट्रीब्यूसन डिस्क मं पा सकथो या एला इहां से डाउनलोड कर सकथो - http: // www. vcdimager. org"
     test2 = "+210-250% Enhanced Damage  50% Bonus To Attack Rating  +150% Damage To Demons  +150% Damage To Undead  9% Life Stolen Per Hit  (0.75/clvl) +0-75% Deadly Strike  Repairs 1 Durability In 4 Sec20% Bonus To Attack Rating  Replenish Life +15  Knockback  +50% Enhanced Damage  Adds 4-20 Cold Damage 3 Sec Duration  Adds 4-20 Cold  Damage 3 Sec Duration"
     test3 = "Public,نفس سيناريو  كوستا  يوم العاشرة 😂😂😂😂 منظنش  أنه مكلخ  يدخل  أساسي  🤔 https://t.co/Bi04uUbzTM,ar"
-    print(clean_sentences(test3))
+    test4 = "e ry'inkoramutima ry'impapuro zi"
+    print(clean_sentences(test4))
