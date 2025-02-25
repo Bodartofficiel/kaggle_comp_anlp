@@ -18,27 +18,27 @@ def clean_sentences(sentence: str) -> str:
 
 def clean_html(sentence: str) -> str:
     cleanr = re.compile("<.*?>")
-    cleantext = re.sub(cleanr, "", sentence)
+    cleantext = re.sub(cleanr, " ", sentence)
     return cleantext
 
 
 def clean_https(sentence: str) -> str:
-    cleantext = re.sub(r"http\S+", "", sentence)
+    cleantext = re.sub(r"http\S+", " ", sentence)
     return cleantext
 
 
 def clean_www(sentence: str) -> str:
-    cleantext = re.sub(r"www\S+", "", sentence)
+    cleantext = re.sub(r"www\S+", " ", sentence)
     return cleantext
 
 
 def clean_email(sentence: str) -> str:
-    cleantext = re.sub(r"\S+@\S+", "", sentence)
+    cleantext = re.sub(r"\S+@\S+", " ", sentence)
     return cleantext
 
 
 def clean_numbers(sentence: str) -> str:
-    cleantext = re.sub(r"\d+", "", sentence)
+    cleantext = re.sub(r"\d+", " ", sentence)
     return cleantext
 
 
@@ -54,12 +54,12 @@ def clean_emoji(sentence: str) -> str:
         "]+",
         flags=re.UNICODE,
     )
-    cleantext = re.sub(emoji_pattern, "", sentence)
+    cleantext = re.sub(emoji_pattern, " ", sentence)
     return cleantext
 
 
 def clean_twitter_at(sentence: str) -> str:
-    cleantext = re.sub(r"@\w+", "", sentence)
+    cleantext = re.sub(r"@\w+", " ", sentence)
     return cleantext
 
 
