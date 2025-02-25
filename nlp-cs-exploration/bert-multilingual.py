@@ -67,15 +67,15 @@ class_weights = torch.tensor(class_weights, dtype=torch.float)
 class BERTClassifier(nn.Module):
     def __init__(self, model_checkpoint, num_labels):
         super(BERTClassifier, self).__init__()
-        self.bert = AutoModel.from_pretrained(model_checkpoint)
+        self.model = AutoModel.from_pretrained(model_checkpoint)
         self.dropout = nn.Dropout(0.3)
-        self.classifier = nn.Linear(self.bert.config.hidden_size, num_labels)
+        self.classifier = nn.Linear(self.model.config.hidden_size, num_labels)
 
-        for param in self.bert.parameters():
+        for param in self.model.parameters():
             param.requires_grad = False
 
     def forward(self, input_ids, attention_mask):
-        outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
+        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
         pooled_output = outputs.last_hidden_state[:, 0, :]  # CLS token
         logits = self.classifier(self.dropout(pooled_output))
         return logits
