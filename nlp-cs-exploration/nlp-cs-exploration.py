@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.utils.class_weight import compute_class_weight
 import pathlib
 from datasets import Dataset
 from transformers import AutoTokenizer
@@ -57,6 +58,10 @@ val_dataset = val_dataset.map(tokenize_function, batched=True)
 # Préparation d'un data collator qui s'occupe du padding dynamique
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
+# Compute class weights
+class_weights = compute_class_weight('balanced', classes=np.unique(df["label"]), y=df["label"])
+class_weights = torch.tensor(class_weights, dtype=torch.float)
+
 class BERTClassifier(nn.Module):
     def __init__(self, model_checkpoint, num_labels):
         super(BERTClassifier, self).__init__()
@@ -102,10 +107,10 @@ training_args = TrainingArguments(
 
 class CustomTrainer(Trainer):
     def compute_loss(self, model, inputs, return_outputs=False):
-        labels = inputs.pop("label")  # Extract labels
-        outputs = model(**inputs)  # Forward pass
-        loss_fn = nn.CrossEntropyLoss()  # Define loss function
-        loss = loss_fn(outputs, labels)  # Compute loss
+        labels = inputs.pop("label")
+        outputs = model(**inputs)
+        loss_fn = nn.CrossEntropyLoss(weight=class_weights.to(outputs.device))  # Apply class weights
+        loss = loss_fn(outputs, labels)
         return (loss, outputs) if return_outputs else loss
 
 trainer = CustomTrainer(
