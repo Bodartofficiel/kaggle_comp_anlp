@@ -1,0 +1,16 @@
+
+La détection automatique de la langue représente un fort enjeux pour diverse application, en premier lieu pour la traduction mais surtout pour l'organisation automatique de contenus multilingues, très utile pour la collecte de données à grand échelle. Permettant de rassembler des corpus plus gros et plus précis utilisés pour entraîner des modèles qui requièrent toujours plus de data.
+
+Les approchent traditionnelles historiques de détection linguistique sont surtout des approches statistiques comme les n-grammes \cite{cavnar1994n} ou TF-IDF \cite{baldwin2010language}. Mais aujourd'hui il est pertinent d'évaluer la performance des modèles de language neuronaux pré-entrainésur des grands corpus multilingues comme BERT \cite{devlin2019bert}.
+
+Dans notre étude, nous avons exploré et comparé plusieurs approches :
+\begin{itemize}
+    \item Une approche classique utilisant TF-IDF avec un classificateur SVM
+    \item FastText, qui exploite efficacement les représentations de sous-mots \cite{joulin2017bag}
+    \item Des modèles transformers multilingues comme mBERT \cite{devlin2019bert} et XLM-RoBERTa \cite{conneau2020unsupervised}
+\end{itemize}
+
+Nos expérimentations ont révélé que [MODÈLE] obtient les meilleures performances avec une précision de [SCORE]\%. Ce résultat peut s'expliquer par [RAISON]. Cependant, nous avons également observé que [OBSERVATION INTÉRESSANTE] concernant [ASPECT SPÉCIFIQUE].
+
+La suite de ce rapport est organisée comme suit : la section 2 présente plus précisémenent les solutions que nous avons essayés, et la section 3 présente et discute des résultats.
+

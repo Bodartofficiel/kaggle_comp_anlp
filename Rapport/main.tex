@@ -1,0 +1,96 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Journal Article
+% LaTeX Template
+% Version 2.0 (February 7, 2023)
+%
+% This template originates from:
+% https://www.LaTeXTemplates.com
+%
+% Author:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/)
+%
+% NOTE: The bibliography needs to be compiled using the biber engine.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+	a4paper, % Paper size, use either a4paper or letterpaper
+	10pt, % Default font size, can also use 11pt or 12pt, although this is not recommended
+	unnumberedsections, % Comment to enable section numbering
+	twoside, % Two side traditional mode where headers and footers change between odd and even pages, comment this option to make them fixed
+]{LTJournalArticle}
+\usepackage{biblatex}
+\usepackage{authblk} 
+\usepackage{caption}
+\captionsetup{width=.5\textwidth}
+\addbibresource{biblio.bib} % BibLaTeX bibliography file
+
+\runninghead{NLP project report} % A shortened article title to appear in the running head, leave this command empty for no running head
+
+\footertext{\textit{Journal} (Year) DOI/ISBN} % Text to appear in the footer, leave this command empty for no footer text
+
+\setcounter{page}{1} % The page number of the first page, set this to a higher number if the article is to be part of an issue or larger work
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\title{ANLP Kaggle project\\ \LARGE Language identification} % Article title with subtitle
+
+
+% Authors are listed in a comma-separated list with superscript numbers indicating affiliations
+% \thanks{} is used for any text that should be placed in a footnote on the first page, such as the corresponding author's email, journal acceptance dates, a copyright/license notice, keywords, etc
+\author{%
+    Ilann Amiaud--Plachy\textsuperscript{1},
+    Thomas Bodart\textsuperscript{1},
+    Maceo Duriez\textsuperscript{1},
+    Marc-César Garcia-Grenet\textsuperscript{1},
+    Gaétan Jacquemin\textsuperscript{1}
+}
+
+\date{\footnotesize\textsuperscript{\textbf{1}}CentraleSupélec, Paris-Saclay University}
+
+% Affiliations are output in the \date{} command
+% \date{\footnotesize\textsuperscript{\textbf{1}}Immersive Audio, L-Acoustics UK Ltd\\ \textsuperscript{\textbf{2}}MSc Student in Information and Comms. Eng., CentraleSupélec, Paris-Saclay University}
+
+% Full-width abstract
+\renewcommand{\maketitlehookd}{%
+	\begin{abstract}
+		\input{abstract.tex}
+	\end{abstract}
+}
+
+%----------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+\maketitle % Output the title section
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+    \input{intro.tex}
+
+\section{Solution}
+
+    \input{solution.tex}
+
+\section{Results and Analysis}
+
+    \input{results.tex}
+
+
+    \printbibliography
+
+
+\end{document}

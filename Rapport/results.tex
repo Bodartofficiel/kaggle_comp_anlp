@@ -1,0 +1,21 @@
+
+On utilise l'accuracy comme score comme les classes sont plus ou moins équilibrés dans notre corpus.
+
+Les resultats des différents modèles sont présentés dans le tableau \ref{tab:results}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{lcccc}
+        \toprule
+        Modèle & val acc & Test acc  & inférence* \\
+        \midrule
+        mBERT & 0.86 & 0.86 & 1h \\
+        FastText & -- & -- & -- \\
+        TFIDF & 0.70 & -- & -- \\
+        \bottomrule
+    \end{tabular}
+
+    \caption{Accuracy sur le val et sur le test des modèles essayés. (*durée d'inférence sur un laptop classique sur tout le corpus de texte)}
+    
+    \label{tab:results}
+\end{table}
