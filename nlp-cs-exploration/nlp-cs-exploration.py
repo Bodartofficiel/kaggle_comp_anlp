@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 from sklearn.utils.class_weight import compute_class_weight
 import pathlib
 from datasets import Dataset
@@ -39,7 +39,9 @@ label2id = {label: idx for idx, label in enumerate(labels)}
 id2label = {idx: label for label, idx in label2id.items()}
 df["label"] = df["Label"].map(label2id)
 
-train_df, val_df = train_test_split(df, test_size=0.2, random_state=42)
+splitter = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+train_idx, val_idx = next(splitter.split(df, df["label"]))
+train_df, val_df = df.iloc[train_idx], df.iloc[val_idx]
 print("Training shape :", train_df.shape)
 print("Validation shape :", val_df.shape)
 
@@ -69,9 +71,8 @@ class BERTClassifier(nn.Module):
         self.dropout = nn.Dropout(0.3)
         self.classifier = nn.Linear(self.bert.config.hidden_size, num_labels)
 
-        # Freeze BERT layers (optional for transfer learning)
         for param in self.bert.parameters():
-            param.requires_grad = False  # Comment this line if fine-tuning
+            param.requires_grad = False
 
     def forward(self, input_ids, attention_mask):
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
@@ -95,14 +96,17 @@ training_args = TrainingArguments(
     output_dir="./results",
     evaluation_strategy="epoch",
     save_strategy="epoch",
-    learning_rate=2e-5,
+    learning_rate=2e-5, 
     per_device_train_batch_size=16,
     per_device_eval_batch_size=16,
-    num_train_epochs=3,
+    num_train_epochs=3,  
     weight_decay=0.01,
     logging_dir="./logs",
     load_best_model_at_end=True,
     metric_for_best_model="accuracy",
+    warmup_ratio=0.1, 
+    lr_scheduler_type="cosine",
+    gradient_accumulation_steps=2,
 )
 
 class CustomTrainer(Trainer):
