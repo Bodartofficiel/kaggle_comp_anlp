@@ -5,7 +5,10 @@ import pathlib
 from datasets import Dataset
 from transformers import AutoTokenizer
 from evaluate import load
+import torch
+import torch.nn as nn
 from transformers import (
+    AutoModel,
     AutoModelForSequenceClassification,
     DataCollatorWithPadding,
     TrainingArguments,
@@ -19,7 +22,7 @@ print("Columns :", df.columns)
 print("Nombre de langue cible :",len(df["Label"].unique()))
 print(df.head())
 
-test_dataset_path = pathlib.Path(__name__).parent / "data/train_submission.csv"
+test_dataset_path = pathlib.Path(__name__).parent / "data/test_without_labels.csv"
 test_df = pd.read_csv(test_dataset_path) 
 print("Shape : ",test_df.shape)
 print(test_df.head())
@@ -54,13 +57,25 @@ val_dataset = val_dataset.map(tokenize_function, batched=True)
 # Préparation d'un data collator qui s'occupe du padding dynamique
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
+class BERTClassifier(nn.Module):
+    def __init__(self, model_checkpoint, num_labels):
+        super(BERTClassifier, self).__init__()
+        self.bert = AutoModel.from_pretrained(model_checkpoint)
+        self.dropout = nn.Dropout(0.3)
+        self.classifier = nn.Linear(self.bert.config.hidden_size, num_labels)
+
+        # Freeze BERT layers (optional for transfer learning)
+        for param in self.bert.parameters():
+            param.requires_grad = False  # Comment this line if fine-tuning
+
+    def forward(self, input_ids, attention_mask):
+        outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
+        pooled_output = outputs.last_hidden_state[:, 0, :]  # CLS token
+        logits = self.classifier(self.dropout(pooled_output))
+        return logits
+
 num_labels = len(labels)
-model = AutoModelForSequenceClassification.from_pretrained(
-    model_checkpoint,
-    num_labels=num_labels,
-    id2label=id2label,
-    label2id=label2id
-)
+model = BERTClassifier(model_checkpoint, num_labels)
 
 accuracy_metric = load("accuracy")
 
@@ -85,7 +100,15 @@ training_args = TrainingArguments(
     metric_for_best_model="accuracy",
 )
 
-trainer = Trainer(
+class CustomTrainer(Trainer):
+    def compute_loss(self, model, inputs, return_outputs=False):
+        labels = inputs.pop("label")  # Extract labels
+        outputs = model(**inputs)  # Forward pass
+        loss_fn = nn.CrossEntropyLoss()  # Define loss function
+        loss = loss_fn(outputs, labels)  # Compute loss
+        return (loss, outputs) if return_outputs else loss
+
+trainer = CustomTrainer(
     model=model,
     args=training_args,
     train_dataset=train_dataset,
@@ -98,7 +121,7 @@ trainer = Trainer(
 trainer.train()
 
 # Chargement du fichier test
-test_dataset_path = pathlib.Path(__name__).parent / "data/train_submission.csv"
+test_dataset_path = pathlib.Path(__name__).parent / "data/test_without_labels.csv"
 test_df = pd.read_csv(test_dataset_path) 
 test_df.reset_index(inplace=True)
 test_dataset = Dataset.from_pandas(test_df)
