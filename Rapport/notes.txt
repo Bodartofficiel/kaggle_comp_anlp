@@ -1,0 +1,33 @@
+
+
+- TF-IDF
+
+
+
+
+- FasText
+utilisation du modèle
+papier
+départ des hyper du papier
+training rapide
+test-hyperparametre
+
+- BERT
+
+xlm roberta - marche mieux
+mBERT
+
+pre trainé sur 120 langues, test transfer + 
+
+- fusion des 2: meilleur résultat.
+
+fastext > 99% : fastext
+sinon roberta
+
+
+- preprocessing (pas ouff)
+enlever url, parenthèses etc.
+enlever anglais dans les autres langues
+
+marche pas ouff
+

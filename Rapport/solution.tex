@@ -1,6 +1,33 @@
+\subsection{TF-IDF}
 
-\subsection{mBERT}
+TF-IDF est une méthode statistique utilisée pour évaluer l'importance d'un mot dans un document par rapport à une collection de documents. Elle combine deux métriques : la fréquence du terme (TF) et la fréquence inverse du document (IDF). La fréquence du terme mesure combien de fois un mot apparaît dans un document, tandis que l'IDF diminue l'importance des mots qui apparaissent fréquemment dans tous les documents.
+
+Pour notre utilisation, TF-IDF nous permet de créer des vecteurs de représentation à partir des textes, puis d'entraîner un classifieur pour évaluer la langue du texte. Dans notre cas, nous avons utilisé un classifieur SVM car c'est celui qui, théoriquement et expérimentalement, donne les meilleurs résultats (voir \cite{baldwin2010language}).
+
+Cette approche nous a donné des résultats assez satisfaisants mais pas suffisants pour notre cas d'utilisation et s'est laissé largement dépasser par les autres approches, certainement car elle ne prend pas en compte les relations entre les mots et les contextes dans lesquels ils apparaissent.
 
 \subsection{FastText}
 
-\subsection{TF-IDF}
+FastText est une bibliothèque développée par Facebook \cite{joulin2017bag} pour la représentation de mots et l'apprentissage de classificateurs de texte. Comme vu en cours, elle repose sur des modèles de type n-grammes pour capturer des informations sur les sous-mots, ce qui permet de mieux gérer les mots rares et les fautes d'orthographe.
+
+FastText est particulièrement efficace pour l'identification de langue car il peut capturer des caractéristiques spécifiques à chaque langue au niveau des sous-mots. Il a donné de très bons résultats dans notre étude, avec des scores similaires voire supérieurs aux modèles de langage neuronaux (voir ci-dessous), mais avec des temps d'entraînement et d'inférence presque instantanés en comparaison.
+
+Pour son entraînement, nous avons dans un premier temps pris les hyperparamètres donnés dans l'article GlotLID \cite{Kargaran_2023}, puis nous avons fait une recherche d'hyperparamètres pour améliorer les performances itérativement.
+
+\subsection{mBERT}
+
+mBERT (Multilingual BERT) est la version multilingue du modèle BERT \cite{devlin2019bert}, qui est un modèle de langage basé sur des transformers. Sa particularité est qu'il est pré-entraîné sur un vaste corpus de textes dans plusieurs langues, ce qui lui permet de comprendre et de générer des représentations contextuelles pour des textes dans différentes langues.
+
+Ce modèle fut notre première approche de langage neuronal pour ce projet. Nous avons d'abord essayé une méthode de transfert (transfer learning) pour adapter mBERT à notre tâche, mais cela s'est avéré insuffisant et il a finalement fallu ajuster les poids du modèle (fine-tuning) pour obtenir des résultats satisfaisants. L'inconvénient de cette méthode est qu'elle est très lourde en calculs (plusieurs heures d'entraînement).
+
+Finalement, mBERT a donné des résultats satisfaisants mais s'est logiquement laissé dépasser par XLM-RoBERTa (voir ci-dessous), qui en est en quelque sorte une version améliorée.
+
+\subsection{XLM-RoBERTa}
+
+XLM-RoBERTa \cite{conneau2020unsupervised} est une variante optimisée de BERT \cite{devlin2019bert} qui utilise un processus d'entraînement plus robuste et une plus grande quantité de données. Les améliorations incluent l'entraînement sur des lots de données plus grands, l'utilisation de plus de données d'entraînement, et l'optimisation des hyperparamètres. C'est donc très logiquement que nos résultats suivent l'amélioration promise par les chercheurs à son origine et qu'il surpasse mBERT.
+
+Notre utilisation reprend la même logique que pour mBERT avec une nette amélioration des performances, mais avec un coût en temps d'entraînement et d'inférence plus élevé.
+
+\subsection{FastText + XLM-RoBERTa}
+
+Il nous est naturellement venu l'envie de combiner nos deux meilleurs modèles pour améliorer les performances de notre solution. La combinaison qui nous a donné les meilleurs résultats après divers essais est la suivante : si l'inférence avec FastText donne une prédiction avec une probabilité supérieure à 0.99, on la garde ; sinon, on utilise XLM-RoBERTa pour donner une prédiction.
