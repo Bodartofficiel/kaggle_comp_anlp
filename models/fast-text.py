@@ -7,6 +7,7 @@ from sklearn.utils import resample
 import re
 import emoji
 import os
+import time
 
 def balance_dataset_downsample(df, n_samples=500, random_state=42):
     df_balanced = pd.concat([
@@ -45,7 +46,9 @@ def train_fasttext_model(input_file, output_model,retrain=True, epoch=9, lr=2, w
 
 def evaluate_model(model, df_val):
     text = df_val['Text'].tolist()
+    t1 = time.time()
     predictions = model.predict(text, k=1)
+    print(f"Temps d'inférence : {time.time()-t1} for {len(text)} inférences")
     df_val['prediction'] = predictions[0]
     df_val['prediction_prob'] = predictions[1]
     df_val['prediction'] = df_val['prediction'].apply(lambda x: x[0])
