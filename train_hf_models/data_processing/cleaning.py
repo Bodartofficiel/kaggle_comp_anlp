@@ -17,14 +17,7 @@ spanish_words = open("./languages/es_full.txt", "r")
 spanish_words = set(line.split()[0] for line in spanish_words)
 
 
-def clean_sentences(row) -> str:
-
-    sentence = row["Text"].lower()
-    try:
-        label = row["label"]
-    except KeyError:
-        label == None
-
+def clean_sentences(sentence: str) -> str:
     sentence = clean_html(sentence)
     sentence = clean_https(sentence)
     sentence = clean_www(sentence)
