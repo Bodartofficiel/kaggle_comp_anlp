@@ -1,18 +1,21 @@
 \subsection{Exploration du dataset et preprocessing}
 
-Le fichier d'entraînement train\_submissions.csv proposé pour cette compétition kaggle est un fichier csv de 3 colonnes Usage, Text, Label et 190599 lignes avec 390 labels cibles. Parmi ces 190599 lignes, 500 d'entre elles ne possèdent pas de label. 
+Le fichier d'entraînement train\_submissions.csv proposé pour cette compétition kaggle est un fichier csv de 3 colonnes Usage, Text, Label et 190599 lignes avec 389 labels cibles. Parmi ces 190599 lignes, 500 d'entre elles ne possèdent pas de label. 
 
 On peut noter que les labels sont déséquilibrés, comme le montre la figure suivante :
 
 \begin{figure}[h!]
     \centering
-    \small
-    \includegraphics[width=0.5\textwidth]{img/unbalance.png}
+    \includegraphics[width=0.5\textwidth, height=7cm]{img/unbalance.png}
     \caption{Distribution déséquilibrée des labels dans le dataset}
     \label{fig:unbalance}
 \end{figure}
 
 Nous avons essayé plusieurs techniques de downsampling et d'oversampling pour palier au déséquilibre des données, notamment en essayant d'enrichir les labels avec le moins de données disponibles grâce à des LLMs. Néanmoins cette approche n'a pas donné de bon résultats car cela retirait une partie des biais inhérents au dataset. Nous avons donc fait le choix de downsampler les labels ayant plus de 500 labels en choisissant 500 lignes aléatoirement parmi ces labels.
+
+Il est à noté que le dataset comprenait de nombreuses langues régionales très peu parlées donc males prises en charge par de nombreux modèles pré-entrainé. De plus, pour ces langues la quantité de données pour l'entrainement était assez faible puisque plus de 50\% des textes ne comportaient pas plus de 16 mots. 
+
+Enfin nous pouvons également souligné la présence de nombreuses langues très répandues telles que l'anglais, l'espagnol ou encore le français qui représentait parfois la totalité de certains textes pourtant labellisé dans une autre langue. C'est pourquoi lors de nos différentes tentatives le recall obtenu sur ces différentes langues s'avérait plus faible comparativement à des langues moins usitées.
 
 Pour ce qui est du preprocessing, nous avons décidé d'appliquer un preprocessing assez simple en retirant notamment les chaînes de caractères n'apportant pas d'informations sur la langue tels que les emojis ou les adresses mails.
 
