@@ -15,6 +15,13 @@ Nous avons essayé plusieurs techniques de downsampling et d'oversampling pour p
 
 Il est à noté que le dataset comprenait de nombreuses langues régionales très peu parlées donc males prises en charge par de nombreux modèles pré-entrainé. De plus, pour ces langues la quantité de données pour l'entrainement était assez faible puisque plus de 50\% des textes ne comportaient pas plus de 16 mots. 
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth, height=7cm]{img/word_count.png}
+    \caption{Nombre de mots par texte.}
+    \label{fig:unbalance}
+\end{figure}
+
 Enfin nous pouvons également souligné la présence de nombreuses langues très répandues telles que l'anglais, l'espagnol ou encore le français qui représentait parfois la totalité de certains textes pourtant labellisé dans une autre langue. C'est pourquoi lors de nos différentes tentatives le recall obtenu sur ces différentes langues s'avérait plus faible comparativement à des langues moins usitées.
 
 Pour ce qui est du preprocessing, nous avons décidé d'appliquer un preprocessing assez simple en retirant notamment les chaînes de caractères n'apportant pas d'informations sur la langue tels que les emojis ou les adresses mails.
