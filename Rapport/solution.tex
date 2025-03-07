@@ -6,6 +6,7 @@ On peut noter que les labels sont déséquilibrés, comme le montre la figure su
 
 \begin{figure}[h!]
     \centering
+    \small
     \includegraphics[width=0.5\textwidth]{img/unbalance.png}
     \caption{Distribution déséquilibrée des labels dans le dataset}
     \label{fig:unbalance}
@@ -56,18 +57,18 @@ Pour son entraînement, nous avons dans un premier temps pris les hyperparamètr
 
 \subsection{mBERT}
 
-mBERT (Multilingual BERT) est la version multilingue du modèle BERT \cite{devlin2019bert}, qui est un modèle de langage basé sur des transformers. Sa particularité est qu'il est pré-entraîné sur un vaste corpus de textes dans plusieurs langues, ce qui lui permet de comprendre et de générer des représentations contextuelles pour des textes dans différentes langues.
+mBERT (Multilingual BERT) est la version multilingue du modèle BERT \cite{devlin2019bert}, qui est un modèle de langage basé sur des transformers, possédant 179M de paramètres. Sa particularité est qu'il est pré-entraîné sur la tâche de Masked Language Model, sur un vaste corpus de textes dans 104 langues, ce qui lui permet de comprendre et de générer des représentations contextuelles pour des textes dans différentes langues.
 
-Ce modèle fut notre première approche de langage neuronal pour ce projet. Nous avons d'abord essayé une méthode de transfert (transfer learning) pour adapter mBERT à notre tâche, mais cela s'est avéré insuffisant et il a finalement fallu ajuster les poids du modèle (fine-tuning) pour obtenir des résultats satisfaisants. L'inconvénient de cette méthode est qu'elle est très lourde en calculs (plusieurs heures d'entraînement).
+Ce modèle fut notre première approche de langage neuronal pour ce projet.  Nous avons de même utilisé le tokenizer correspondant à mBERT, comprenant tous les caractères de notre corpus, et nous n'avons pas mis de limite de taille pour le nombre de tokens. Nous avons d'abord essayé une méthode de transfert (transfer learning) pour adapter mBERT à notre tâche, mais cela s'est avéré insuffisant et il a finalement fallu ajuster les poids du modèle (fine-tuning) pour obtenir des résultats satisfaisants sur 10 epochs, en utilisant 85\% du dataset fourni en train, et une dernière epoch en utilisant la totalité du corpus, pour utiliser le plein potentiel de nos données. L'inconvénient de cette méthode est qu'elle est très lourde en calculs (plusieurs heures d'entraînement).
 
-Finalement, mBERT a donné des résultats satisfaisants mais s'est logiquement laissé dépasser par XLM-RoBERTa (voir ci-dessous), qui en est en quelque sorte une version améliorée.
+Finalement, mBERT a donné des résultats satisfaisants mais s'est logiquement laissé dépasser par XLM-RoBERTa (voir ci-dessous), qui possède en particulier plus de paramètres.
 
 \subsection{XLM-RoBERTa}
 
-XLM-RoBERTa \cite{conneau2020unsupervised} est une variante optimisée de BERT \cite{devlin2019bert} qui utilise un processus d'entraînement plus robuste et une plus grande quantité de données. Les améliorations incluent l'entraînement sur des lots de données plus grands, l'utilisation de plus de données d'entraînement, et l'optimisation des hyperparamètres. C'est donc très logiquement que nos résultats suivent l'amélioration promise par les chercheurs à son origine et qu'il surpasse mBERT.
+XLM-RoBERTa \cite{conneau2020unsupervised} est une variante optimisée de BERT \cite{devlin2019bert} qui utilise un processus d'entraînement plus robuste et une plus grande quantité de données sur 100 langues. Nous avons utilisé le modèle base à 279M de paramètres. Les améliorations incluent l'entraînement sur des lots de données plus grands, l'utilisation de plus de données d'entraînement, et l'optimisation des hyperparamètres. C'est donc très logiquement que nos résultats suivent l'amélioration promise par les chercheurs à son origine et qu'il surpasse mBERT.
 
-Notre utilisation reprend la même logique que pour mBERT avec une nette amélioration des performances, mais avec un coût en temps d'entraînement et d'inférence plus élevé.
+Notre utilisation reprend la même logique que pour mBERT avec une nette amélioration des performances, mais avec un coût en temps d'entraînement et d'inférence plus élevé. Pour palier à cela, nous avons décidé de restreindre chaque phrase à 128 tokens, avec un padding si la phrase contient moins de 128 tokens, et un troncage si elle en contient plus. Cela a drastiquement réduit le temps d'entraînement. Nous avons également utilisé un taux d'apprentissage de 2e-5, un batch size de 64, et un nombre d'époques de 10. On a de plus utilisé le tokenizer de XLM-RoBERTa.
 
-\subsection{FastText + XLM-RoBERTa}
+\subsection{Combinaison FastText et XLM-RoBERTa}
 
-Il nous est naturellement venu l'envie de combiner nos deux meilleurs modèles pour améliorer les performances de notre solution. La combinaison qui nous a donné les meilleurs résultats après divers essais est la suivante : si l'inférence avec FastText donne une prédiction avec une probabilité supérieure à 0.99, on la garde ; sinon, on utilise XLM-RoBERTa pour donner une prédiction.
+Il nous est naturellement venu l'envie de combiner nos modèles portant sur des approches différentes pour tenter de profiter des avantages de chaques approches, pour améliorer les performances de notre solution. La combinaison qui nous a donné les meilleurs résultats après divers essais est la suivante : si l'inférence avec FastText donne une prédiction avec une probabilité supérieure à 0.99\%, on la garde ; sinon, on utilise XLM-RoBERTa pour donner une prédiction. Nous avons fait une étude de sensibilité sur le seuil de probabilité de FastText, et 0.99\% est le seuil qui nous a donné les meilleurs résultats, et, en effet, les prédictions au dessus de ce seuil ont une accuracy de 99\% sur le val.
