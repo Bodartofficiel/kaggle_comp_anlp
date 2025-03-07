@@ -16,23 +16,24 @@ Pour son entraînement, nous avons dans un premier temps pris les hyperparamètr
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|l|l|c|}
+    \small
+    \begin{tabular}{lcc}
         \hline
         \textbf{Argument} & \textbf{Description} & \textbf{Valeur} \\
         \hline
-        -minCount & Nombre minimal d'occurrences d'un mot & 1000 \\
-        -minCountLabel & Nombre minimal d'occurrences d'un label & 0 \\
-        -wordNgrams & Longueur maximale des n-grammes de mots & 1 \\
-        -bucket & Nombre de buckets & 10e6 \\
-        -minn & Longueur minimale des n-grammes de caractères & 1 \\
-        -maxn & Longueur maximale des n-grammes de caractères & 5 \\
-        -loss & Fonction de perte & softmax \\
-        -dim & Taille des vecteurs de mots & 256 \\
+        -minCount & Occurrences min mot & 1000 \\
+        -minCountLabel & Occurrences min label & 0 \\
+        -wordNgrams & Max n-grammes mots & 1 \\
+        -bucket & Nb de buckets & $10^6$ \\
+        -minn & Min. n-gram caractères & 1 \\
+        -maxn & Max. n-gram caractères & 5 \\
+        -loss & Perte & softmax \\
+        -dim & Taille vecteurs & 256 \\
         -epoch & Nombre d'époques & 9 \\
-        -lr & Taux d'apprentissage & 1.5 \\
+        -lr & Taux apprentissage & 1.5 \\
         \hline
     \end{tabular}
-    \caption{Hyperparamètres d'entraînement de notre modèle FastText}
+    \caption{Hyperparamètres d'entraînement du modèle FastText}
     \label{tab:glotlid-m-hyperparams}
 \end{table}
 
@@ -50,6 +51,6 @@ XLM-RoBERTa \cite{conneau2020unsupervised} est une variante optimisée de BERT \
 
 Notre utilisation reprend la même logique que pour mBERT avec une nette amélioration des performances, mais avec un coût en temps d'entraînement et d'inférence plus élevé. Pour palier à cela, nous avons décidé de restreindre chaque phrase à 128 tokens, avec un padding si la phrase contient moins de 128 tokens, et un troncage si elle en contient plus. Cela a drastiquement réduit le temps d'entraînement. Nous avons également utilisé un taux d'apprentissage de 2e-5, un batch size de 64, et un nombre d'époques de 10. On a de plus utilisé le tokenizer de XLM-RoBERTa.
 
-\subsection{FastText + XLM-RoBERTa}
+\subsection{Combinaison FastText et XLM-RoBERTa}
 
 Il nous est naturellement venu l'envie de combiner nos modèles portant sur des approches différentes pour tenter de profiter des avantages de chaques approches, pour améliorer les performances de notre solution. La combinaison qui nous a donné les meilleurs résultats après divers essais est la suivante : si l'inférence avec FastText donne une prédiction avec une probabilité supérieure à 0.99\%, on la garde ; sinon, on utilise XLM-RoBERTa pour donner une prédiction. Nous avons fait une étude de sensibilité sur le seuil de probabilité de FastText, et 0.99\% est le seuil qui nous a donné les meilleurs résultats, et, en effet, les prédictions au dessus de ce seuil ont une accuracy de 99\% sur le val.
