@@ -1,13 +1,21 @@
 
-Pour évaluer la performance de nos modèles on utilise l'accuracy comme score car les classes sont plus ou moins équilibrés dans notre corpus, et le sont dans le test.
 
-Les resultats des différents modèles sont présentés dans le tableau \ref{tab:results}.
+\title{Analyse des performances des modèles de détection de langues}
+\author{}
+\date{}
+\maketitle
+
+\section{Évaluation des modèles}
+
+Pour évaluer la performance de nos modèles, nous utilisons l'accuracy comme métrique principale. Cette métrique est particulièrement pertinente dans notre cas, car les classes sont relativement équilibrées dans notre corpus, y compris dans l'ensemble de test.
+
+Les résultats obtenus pour les différents modèles sont présentés dans le tableau~\ref{tab:results}.
 
 \begin{table}[ht]
     \centering
     \begin{tabular}{lcccc}
         \toprule
-        Modèle & val acc & Test acc  & inférence* \\
+        Modèle & Val acc & Test acc  & inférence* \\
         \midrule
         FastText & 0.86 & 0.84 & 1min \\
         TFIDF & 0.34 & 0.33 & 30s \\
@@ -22,4 +30,29 @@ Les resultats des différents modèles sont présentés dans le tableau \ref{tab
     \label{tab:results}
 \end{table}
 
-Pour conclure, il était prédictible que l'adaptation modèles de languages neuronaux lourd donneraient des très bons résultats pour la détection de langues en contrapartie de lourds coûts en entrainement et en inférence. Mais on a été particularièrement surpris par la performance de FastText qui a donné des résultats très proches des modèles neuronaux en un temps d'inférence quasi instantanée. C'est pourquoi nous avons décidé de combiner FastText et XLM-RoBERTa pour obtenir un modèle plus performant, en utilisant les forces de FastText pour combler les faiblesses des grands modèles de langages.
+\section{Analyse des résultats}
+
+\subsection{Performance globale des modèles}
+
+Comme attendu, les modèles neuronaux de grande taille (mBERT, XLM-RoBERTa) offrent des performances élevées, avec une accuracy test atteignant 0.86 et 0.87 respectivement. Ces résultats confirment que les modèles de type Transformer sont particulièrement efficaces pour la tâche de détection de langues, grâce à leur capacité à capturer des représentations riches et contextuelles des textes.
+
+Toutefois, cette performance a un coût : le temps d'inférence est particulièrement élevé. Par exemple, mBERT nécessite \textbf{1h15} pour traiter l'ensemble du corpus, ce qui peut poser des contraintes importantes dans un contexte de production ou de traitement en temps réel.
+
+Le modèle TF-IDF, basé sur une approche purement statistique, affiche des résultats bien inférieurs (\textbf{0.34 d’accuracy}), ce qui montre ses limites face aux approches basées sur l’apprentissage automatique. Cela est sûrement dû à la présence de dialectes très proches.
+
+\subsection{L'exception FastText}
+
+Un résultat particulièrement surprenant est celui de \textbf{FastText}, qui atteint \textbf{0.84 d'accuracy en test}, soit un score très proche de ceux obtenus avec des modèles neuronaux beaucoup plus lourds. Ce modèle présente un énorme avantage : son \textbf{temps d'inférence est quasi instantané} (1 min sur l’ensemble du corpus de 200K instances). Cela en fait un candidat idéal pour des applications nécessitant un traitement rapide et efficace, comme la classification de textes en temps réel ou l’analyse de grandes quantités de données avec des ressources limitées.
+
+\subsection{Vers une combinaison optimale : FT + XLM-R}
+
+Face à ces observations, nous avons cherché à combiner les forces de nos différents modèles pour accroître l'accuracy et être plus performant sur le concours. L’association de \textbf{FastText et XLM-RoBERTa} (FT + XLM-R) a permis d’atteindre une \textbf{accuracy de 0.88}, soit la meilleure performance obtenue parmi tous les modèles testés.
+En combinant ces deux modèles, nous obtenons un système performant qui optimise le \textbf{l'accuracy} bien qu'elle ne permette pas de réduire le temps d'inférence.
+
+\section{Conclusion et perspectives}
+
+Nos résultats montrent que, bien que les modèles neuronaux de type Transformer offrent d’excellentes performances en détection de langues, leur coût en calcul reste un défi majeur. FastText s’est révélé être une alternative étonnamment efficace, capable d’obtenir des résultats proches des modèles neuronaux tout en étant extrêmement rapide.
+
+La combinaison de FastText avec XLM-RoBERTa permet de tirer parti des avantages des deux approches, offrant ainsi une solution optimisée pour la détection de langues à grande échelle. Dans le futur, des recherches pourraient être menées pour affiner davantage le temps d'inférence de notre meilleur modèle tout en conservant son excellente précision, notamment en explorant des techniques comme la \textbf{distillation de connaissances}, où un modèle léger apprend à reproduire les décisions d’un modèle plus complexe. 
+Pour aller plus loin au niveau de la précision, il serait intéressant d'explorer plus en profondeur, et avec plus de temps les hyperparamètres de nos grand modèles de langages neuronaux, pour voir si nous pouvons encore améliorer les performances, voir de tester, avec une puissance de calcul plus importante, des modèles plus grands comme RoBERTa large, possèdant 355M de paramètres.
+
