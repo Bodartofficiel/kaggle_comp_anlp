@@ -1,12 +1,5 @@
 
 
-\title{Analyse des performances des modèles de détection de langues}
-\author{}
-\date{}
-\maketitle
-
-\section{Évaluation des modèles}
-
 Pour évaluer la performance de nos modèles, nous utilisons l'accuracy comme métrique principale. Cette métrique est particulièrement pertinente dans notre cas, car les classes sont relativement équilibrées dans notre corpus, y compris dans l'ensemble de test.
 
 Les résultats obtenus pour les différents modèles sont présentés dans le tableau~\ref{tab:results}.
@@ -29,9 +22,6 @@ Les résultats obtenus pour les différents modèles sont présentés dans le ta
     
     \label{tab:results}
 \end{table}
-
-\section{Analyse des résultats}
-
 \subsection{Performance globale des modèles}
 
 Comme attendu, les modèles neuronaux de grande taille (mBERT, XLM-RoBERTa) offrent des performances élevées, avec une accuracy test atteignant 0.86 et 0.87 respectivement. Ces résultats confirment que les modèles de type Transformer sont particulièrement efficaces pour la tâche de détection de langues, grâce à leur capacité à capturer des représentations riches et contextuelles des textes.
@@ -42,7 +32,7 @@ Le modèle TF-IDF, basé sur une approche purement statistique, affiche des rés
 
 \subsection{L'exception FastText}
 
-Un résultat particulièrement surprenant est celui de \textbf{FastText}, qui atteint \textbf{0.84 d'accuracy en test}, soit un score très proche de ceux obtenus avec des modèles neuronaux beaucoup plus lourds. Ce modèle présente un énorme avantage : son \textbf{temps d'inférence est quasi instantané} (1 min sur l’ensemble du corpus de 200K instances). Cela en fait un candidat idéal pour des applications nécessitant un traitement rapide et efficace, comme la classification de textes en temps réel ou l’analyse de grandes quantités de données avec des ressources limitées.
+Un résultat particulièrement intéressant est celui de \textbf{FastText}, qui atteint \textbf{0.84 d'accuracy en test}, soit un score très proche de ceux obtenus avec des modèles neuronaux beaucoup plus lourds. Ce modèle présente un énorme avantage : son \textbf{temps d'inférence est quasi instantané} (1 min sur l’ensemble du corpus de 200K instances). Cela en fait un candidat idéal pour des applications nécessitant un traitement rapide et efficace, comme la classification de textes en temps réel ou l’analyse de grandes quantités de données avec des ressources limitées.
 
 \subsection{Vers une combinaison optimale : FT + XLM-R}
 
@@ -51,8 +41,8 @@ En combinant ces deux modèles, nous obtenons un système performant qui optimis
 
 \section{Conclusion et perspectives}
 
-Nos résultats montrent que, bien que les modèles neuronaux de type Transformer offrent d’excellentes performances en détection de langues, leur coût en calcul reste un défi majeur. FastText s’est révélé être une alternative étonnamment efficace, capable d’obtenir des résultats proches des modèles neuronaux tout en étant extrêmement rapide.
+Nos résultats montrent que, bien que les modèles de type Transformer offrent d’excellentes performances en détection de langues, leur coût en calcul reste un défi majeur. FastText s’est révélé être une alternative étonnamment efficace, capable d’obtenir des résultats proches des modèles neuronaux tout en étant extrêmement rapide.
 
 La combinaison de FastText avec XLM-RoBERTa permet de tirer parti des avantages des deux approches, offrant ainsi une solution optimisée pour la détection de langues à grande échelle. Dans le futur, des recherches pourraient être menées pour affiner davantage le temps d'inférence de notre meilleur modèle tout en conservant son excellente précision, notamment en explorant des techniques comme la \textbf{distillation de connaissances}, où un modèle léger apprend à reproduire les décisions d’un modèle plus complexe. 
-Pour aller plus loin au niveau de la précision, il serait intéressant d'explorer plus en profondeur, et avec plus de temps les hyperparamètres de nos grand modèles de langages neuronaux, pour voir si nous pouvons encore améliorer les performances, voir de tester, avec une puissance de calcul plus importante, des modèles plus grands comme RoBERTa large, possèdant 355M de paramètres.
+Pour aller plus loin au niveau de la précision, il serait intéressant d'explorer plus en profondeur, et avec plus de temps les hyperparamètres de nos grands modèles de langages neuronaux, pour voir si nous pouvons encore améliorer les performances, voir de tester, avec une puissance de calcul plus importante, des modèles plus grands comme RoBERTa large, possèdant 355M de paramètres.
 
