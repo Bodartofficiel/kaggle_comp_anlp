@@ -9,11 +9,11 @@ Les resultats des différents modèles sont présentés dans le tableau \ref{tab
         \toprule
         Modèle & val acc & Test acc  & inférence* \\
         \midrule
-        FastText & -- & -- & -- \\
-        TFIDF & 0.70 & -- & -- \\
-        mBERT & 0.86 & 0.86 & 1h \\
-        XLM-roBERTa & -- & -- & -- \\
-        FT + XLM-R & -- & -- & -- \\
+        FastText & 0.86 & 0.84 & 0.1s \\
+        TFIDF & 0.70 & 0.69 & 0.1s \\
+        mBERT & 0.86 & 0.86 & 50min \\
+        XLM-roBERTa & 0.87 & 0.87 & 40min \\
+        FT + XLM-R & 0.88 & 0.88 & 40min \\
         \bottomrule
     \end{tabular}
 
@@ -22,4 +22,4 @@ Les resultats des différents modèles sont présentés dans le tableau \ref{tab
     \label{tab:results}
 \end{table}
 
-Pour conclure, il était prédictible que l'adaptation modèles de languages neuronaux lourd donneraient des très bons résultats pour la détection de langues en contrapartie de lourrds coûts en entrainement et en inférence. Mais on a été particularièrement surpris par la performance de FastText qui a donné des résultats très proches des modèles neuronaux en un temps d'inférence quasi instantané. C'est pourquoi nous avons décidé de combiner FastText et XLM-RoBERTa pour obtenir un modèle plus performant en score et en coût d'inférence.
+Pour conclure, il était prédictible que l'adaptation modèles de languages neuronaux lourd donneraient des très bons résultats pour la détection de langues en contrapartie de lourds coûts en entrainement et en inférence. Mais on a été particularièrement surpris par la performance de FastText qui a donné des résultats très proches des modèles neuronaux en un temps d'inférence quasi instantanée. C'est pourquoi nous avons décidé de combiner FastText et XLM-RoBERTa pour obtenir un modèle plus performant, en utilisant les forces de FastText pour combler les faiblesses des grands modèles de langages.
