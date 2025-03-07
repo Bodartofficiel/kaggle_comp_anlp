@@ -1,4 +1,4 @@
-\subsection{Exploration du dataset et preprocessing}
+\subsection{Exploration du dataset}
 
 Le fichier d'entraînement train\_submissions.csv proposé pour cette compétition kaggle est un fichier csv de 3 colonnes Usage, Text, Label et 190599 lignes avec 389 labels cibles. Parmi ces 190599 lignes, 500 d'entre elles ne possèdent pas de label. 
 
@@ -24,8 +24,14 @@ Il est à noté que le dataset comprenait de nombreuses langues régionales trè
 
 Enfin nous pouvons également souligné la présence de nombreuses langues très répandues telles que l'anglais, l'espagnol ou encore le français qui représentait parfois la totalité de certains textes pourtant labellisé dans une autre langue. C'est pourquoi lors de nos différentes tentatives le recall obtenu sur ces différentes langues s'avérait plus faible comparativement à des langues moins usitées.
 
-Pour ce qui est du preprocessing, nous avons décidé d'appliquer un preprocessing assez simple en retirant notamment les chaînes de caractères n'apportant pas d'informations sur la langue tels que les emojis ou les adresses mails.
+\subsection{Preprocessing}
+Les données sont parfois bruitées : certaines contiennent du code html, des adresses mails ou encore des emojis. En outre, certaines données contiennent beaucoup de mots en anglais (ou autre langue très parlée), voire sont mal classifiées : cela s'explique notamment par le fait que les données proviennent de site tels que twitter, où beaucoup d'utilisateurs utilisent l'anglais par soucis de compréhension. Le preprocessing a donc été notamment tourné vers l'identification et l'élimination du bruit. Nous avons prévu deux preprocessing : suppression des charactères non pertinents (emojis, balises html, ...) et suppression des mots en anglais, français et espagnol lorsqu'ils sont minoritaires dans la phrase.
 
+Pour la suppression des caractères non pertinents, nous avons utilisé des règles regex. Cependant, l'impact sur la qualité des prédictions n'a pas été très important : cela pourrait s'expliquer par la suppression de biais présents dans certaines langues, biais qui proviennent du scrapping de sources similaires et qui créent des similarités intra-classes ne provenant pas du langage. Par exemple, on pourrait imaginer que les données disponibles pour une langue ont été intégralement prises d'un compte Twitter/X, ce qui pourrait créer un biais sur l'utilisation de certains emojis.
+
+Pour la suppression des mots en anglais, français, espagnol, nous avons utilisé des bases de données de mots provenant d'un github (\cite{hermitdave2018frequency}). Nous avons utilisé un seuil : si les mots repérés sont minoritaires dans la phrase (moins de 50\% de la phrase), nous avons considéré que ces mots étaient empruntés à l'anglais, au français ou à l'espagnol, et avons retiré ces mots des phrases. Cette démarche n'a pas été très concluante : cela s'explique notamment par la présence de dialectes (par exemple, l'argentin) qui partagent de nombreux mots avec d'autres langues.
+
+Finalement, nous avons choisi d'utiliser le dataset tel quel, et de concentrer nos efforts sur les modèles utilisés.
 \subsection{TF-IDF}
 
 TF-IDF est une méthode statistique utilisée pour évaluer l'importance d'un mot dans un document par rapport à une collection de documents. Elle combine deux métriques : la fréquence du terme (TF) et la fréquence inverse du document (IDF). La fréquence du terme mesure combien de fois un mot apparaît dans un document, tandis que l'IDF diminue l'importance des mots qui apparaissent fréquemment dans tous les documents.
