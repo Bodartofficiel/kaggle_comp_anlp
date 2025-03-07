@@ -6,9 +6,9 @@ from transformers import AutoTokenizer
 from data_processing.cleaning import clean_languages, clean_sentences
 
 
-def get_and_process_dataset(model_path: str, tokenizer: AutoTokenizer):
+def get_and_process_dataset(file_path: str, tokenizer: AutoTokenizer):
     dataset = (
-        pd.read_csv(model_path, encoding="utf-8").dropna().reset_index()[COLUMN_NAMES]
+        pd.read_csv(file_path, encoding="utf-8").dropna().reset_index()[COLUMN_NAMES]
     )
     labels = dataset[COLUMN_NAMES[1]].unique()
     label2id = {label: i for i, label in enumerate(labels)}
@@ -24,6 +24,16 @@ def get_and_process_dataset(model_path: str, tokenizer: AutoTokenizer):
     )
     dataset = dataset.train_test_split(test_size=0.2, seed=SEED)
     return dataset["train"], dataset["test"], labels, label2id, id2label
+
+
+def get_and_process_test_dataset(file_path: str):
+    dataset = Dataset.from_csv(file_path).remove_columns(["Usage"])
+    preprocessing_func = lambda x: x
+    if "REGEX" in PREPROCESSING:
+        preprocessing_func = lambda x: clean_sentences(preprocessing_func(x))
+    if "CLEAN_LANGUAGES" in PREPROCESSING:
+        preprocessing_func = lambda x: clean_languages(preprocessing_func(x))
+    return dataset.map(preprocessing_func, batched=False)
 
 
 def preprocess_dataset(

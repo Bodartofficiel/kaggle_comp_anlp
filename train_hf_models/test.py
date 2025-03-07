@@ -5,8 +5,7 @@ import time
 import pandas as pd
 import torch
 from config import *
-from datasets import Dataset
-from sklearn.metrics import classification_report
+from get_and_process_dataset import get_and_process_test_dataset
 from tqdm import tqdm
 from transformers import pipeline
 
@@ -15,7 +14,7 @@ device = (
     if torch.backends.mps.is_available()
     else "cuda" if torch.cuda.is_available() else "cpu"
 )
-test_dataset = Dataset.from_csv(TEST_DATA_PATH).remove_columns(["Usage"])
+test_dataset = get_and_process_test_dataset(TEST_DATA_PATH)
 
 checkpoint_folders = sorted(
     glob.glob(os.path.join(OUTPUT_DIR, "checkpoint-*")),
